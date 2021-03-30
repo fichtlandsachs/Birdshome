@@ -1,0 +1,13 @@
+Flask
+numpy
+opencv-python
+matplotlib
+pathlib
+pandas
+uWSGI
+uwsgidecorators
+requests
+responses
+PyAudio
+SQLAlchemy
+python-ffmpeg-video-streaming
