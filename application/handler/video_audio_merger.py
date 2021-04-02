@@ -1,7 +1,6 @@
 import os
 import subprocess
 import threading
-from time import sleep
 
 
 class AudioVideoMerge:
@@ -17,9 +16,9 @@ class AudioVideoMerge:
 
     def merge(self):
         cmd = "ffmpeg -y -i " + self.videoFile + " -i " + self.audioFile + " -vcodec copy -acodec copy " \
-               + self.fileName
+              + self.fileName
         subprocess.call(cmd, shell=True)
-        #sleep(5)
+        # sleep(5)
         os.remove(self.videoFile)
         os.remove(self.audioFile)
 

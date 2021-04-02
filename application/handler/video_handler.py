@@ -1,8 +1,8 @@
 import datetime
 import threading
 
-import numpy as np
 import cv2
+import numpy as np
 
 
 class VideoRecorder:
@@ -35,7 +35,7 @@ class VideoRecorder:
         vidframe.clear()
         i = len(self.vidFrames)
         video_frames_num = i / self.vid_duration
-        fourcc = cv2.cv2.VideoWriter_fourcc('M','J','P','G')
+        fourcc = cv2.cv2.VideoWriter_fourcc(*'XVID')
         self.vid_Out = cv2.cv2.VideoWriter(self.fileName, fourcc, video_frames_num, (self.vid_Height, self.vid_Width),
                                            False)
         while i > 1:

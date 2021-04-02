@@ -1,9 +1,11 @@
-from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker
-from application.models import birdsActivity, climate
 from datetime import datetime as dt
 
 import pandas as pd
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker
+
+from application.models import birdsActivity, climate
+
 
 class DBHandler():
     def __init__(self, engine=None):
@@ -20,13 +22,14 @@ class DBHandler():
         self.session.commit()
         self.close()
 
-
     def close(self):
         self.session.close()
         self.conn.close()
 
     def getAllActivity(self):
-        birdsActivities = pd.read_sql_query('SELECT strftime("%d.%m.%Y", id) as Datum, strftime("%H:%M:%S", id) as Zeit from birds_activity;',self.conn)
+        birdsActivities = pd.read_sql_query(
+            'SELECT strftime("%d.%m.%Y", id) as Datum, strftime("%H:%M:%S", id) as Zeit from birds_activity;',
+            self.conn)
         self.conn.close()
         return birdsActivities
 
@@ -36,5 +39,7 @@ class DBHandler():
         self.session.commit()
 
     def getAllClimateRecords(self):
-        clim_recs = pd.read_sql_query('select strftime("%d.%m.%Y", id) as Datum, strftime("%H:%M:%S", id) as Zeit, temperature as Temperatur, humidity as Luftfeuchtigkeit, pressure as Luftdruck, density as Helligkeit, temp_nest as TempNest from climate;', self.conn)
+        clim_recs = pd.read_sql_query(
+            'select strftime("%d.%m.%Y", id) as Datum, strftime("%H:%M:%S", id) as Zeit, temperature as Temperatur, humidity as Luftfeuchtigkeit, pressure as Luftdruck, density as Helligkeit, temp_nest as TempNest from climate;',
+            self.conn)
         return clim_recs

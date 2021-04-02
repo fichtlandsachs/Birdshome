@@ -1,7 +1,5 @@
 import os
-import threading
 import wave
-from time import sleep
 
 import pyaudio
 
@@ -28,7 +26,7 @@ class AudioRecorder:
         "Audio starts being recorded"
         i = 0
         self.stream.start_stream()
-        while i< 100:
+        while i < 100:
             data = self.stream.read(self.frames_per_buffer)
             self.audio_frames.append(data)
             if not self.open:

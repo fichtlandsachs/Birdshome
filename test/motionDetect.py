@@ -3,10 +3,11 @@
 # it constantly checks the camera for differences
 # every 100 frames it changes the reference picture to avoid permanent detection
 
-import cv2
 from time import sleep
+
+import cv2
+
 # importing datetime class from datetime library
-from datetime import datetime
 
 # Assigning our static_back to None
 static_back = None
@@ -50,7 +51,7 @@ while True:
 
     # Finding contour of moving object
     _, cnts, _ = cv2.findContours(thresh_frame.copy(),
-                               cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+                                  cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
 
     for contour in cnts:
         print(str(cv2.contourArea(contour)))
@@ -59,7 +60,7 @@ while True:
         motion = 1
 
         (x, y, w, h) = cv2.boundingRect(contour)
-        #static_back = frame
+        # static_back = frame
         # making green rectangle arround the moving object
         cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 255, 0), 3)
 
@@ -78,7 +79,7 @@ while True:
 
     key = cv2.waitKey(1)
     sleep(0.33)
-    count = count +1
+    count = count + 1
     # Appending time of motion in DataFrame
 
 video.release()

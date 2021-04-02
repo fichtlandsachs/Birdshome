@@ -1,7 +1,5 @@
-from flask_sqlalchemy import Model
 from sqlalchemy import String, Column, Integer, func
 from sqlalchemy.dialects.sqlite import DATETIME
-
 from sqlalchemy.ext.declarative import declarative_base
 
 from application import db

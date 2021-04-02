@@ -1,5 +1,4 @@
 #!/usr/bin/python
-import datetime, time, os, math
 
 import smbus
 
@@ -43,4 +42,3 @@ class sensor_gy_30():
     def readLight(self, addr=DEVICE):
         data = bus.read_i2c_block_data(addr, CONTINUOUS_LOW_RES_MODE)
         return self.convertToNumber(data)
-

@@ -1,7 +1,9 @@
 #!/usr/bin/python
 # coding=utf-8
-from flask import current_app as app
 from os import path
+
+from flask import current_app as app
+
 
 def aktuelleTemperatur():
     # 1-wire Slave Datei lesen
@@ -12,11 +14,11 @@ def aktuelleTemperatur():
         filecontent = file.read()
         file.close()
 
-    # Temperaturwerte auslesen und konvertieren
+        # Temperaturwerte auslesen und konvertieren
         stringvalue = filecontent.split("\n")[1].split(" ")[9]
         temperature = float(stringvalue[2:]) / 1000
 
-    # Temperatur ausgeben
+        # Temperatur ausgeben
         rueckgabewert = '%6.2f' % temperature
         return (rueckgabewert)
     else:

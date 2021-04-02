@@ -1,9 +1,9 @@
+import os
+from grp import getgrnam
+from pwd import getpwnam
+
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
-from pwd import getpwnam
-from grp import getgrnam
-import os
-
 
 db = SQLAlchemy()
 

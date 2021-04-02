@@ -8,7 +8,7 @@ class Config:
     TESTING = False
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     SQLALCHEMY_DATABASE_URI = 'sqlite:////etc/birdshome/birdshome_base.db'
-    #Bezeichnung der Temperaturfühler im Verzeichnis /sys/bus/w1/devices
+    # Bezeichnung der Temperaturfühler im Verzeichnis /sys/bus/w1/devices
     WIREDATEI_TEMP_NEST = '28-02148107cbff'
     WIREDATEI_TEMP_OUT = '28-0317252964ff'
     # Start measurement at 4lx resolution. Time typically 16ms.
@@ -31,13 +31,13 @@ class Config:
     UPLOAD_FOLDER_PIC = os.path.join('media', 'photos')
     UPLOAD_FOLDER_CHART = os.path.join('media', 'charts')
     UPLOAD_FOLDER_VID = os.path.join('media', 'videos')
-    UPLOAD_FOLDER_VID_NO = os.path.join('media', 'videos','no_detect')
+    UPLOAD_FOLDER_VID_NO = os.path.join('media', 'videos', 'no_detect')
     PIC_ENDING = '.jpg'
-    VID_ENDINGS = ['.mp4', '.avi']
+    VID_ENDINGS = ['*.m4p', '*.avi']
     ACTIVITY_LIST_OUT = 'BirdsActivity'
     ACTIVITY_LIST_END = '.xlsx'
-    LATEST_PIC = socket.gethostname()+'_'
-    LATEST_VID = socket.gethostname()+'_'
+    LATEST_PIC = socket.gethostname() + '_'
+    LATEST_VID = socket.gethostname() + '_'
     LATEST_PIC_RES_X = '640'
     LATEST_PIC_RES_Y = '480'
     VID_RES_X = 1280
@@ -45,6 +45,7 @@ class Config:
     VID_FRAMES = 30
     TIME_FORMATE = "%d%m%Y%H%M%S"
     TEMPLATES_AUTO_RELOAD = True
+
 
 class ProdConfig(Config):
     DEBUG = False

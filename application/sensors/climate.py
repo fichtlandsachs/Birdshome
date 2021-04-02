@@ -1,11 +1,10 @@
 import datetime as dt
 import sqlite3 as db
-from time import sleep
-import busio
-import adafruit_bme280
 from os import path
-import smbus
 
+import adafruit_bme280
+import busio
+import smbus
 # Start measurement at 4lx resolution. Time typically 16ms.
 from microcontroller import pin
 
@@ -36,10 +35,10 @@ bus = smbus.SMBus(1)  # Rev 2 Pi uses 1
 
 def _aktuelleTemperatur(folder='28-02148107cbff'):
     # 1-wire Slave Datei lesen
-    folder = '/sys/bus/w1/devices/'+folder
-    rueckgabewert=0
+    folder = '/sys/bus/w1/devices/' + folder
+    rueckgabewert = 0
     if path.exists(folder):
-        complFolder = folder+'/w1_slave'
+        complFolder = folder + '/w1_slave'
         if path.exists(complFolder):
             file = open(complFolder)
             filecontent = file.read()
@@ -53,6 +52,7 @@ def _aktuelleTemperatur(folder='28-02148107cbff'):
             rueckgabewert = '%6.2f' % temperature
     return rueckgabewert
 
+
 def _getClimate():
     i2c = busio.I2C(pin.i2cPorts[1][1], pin.i2cPorts[1][2])
     bme280 = adafruit_bme280.Adafruit_BME280_I2C(i2c, address=0x76)
@@ -60,18 +60,17 @@ def _getClimate():
 
 
 if __name__ == '__main__':
-        connection = db.connect('/etc/birdshome/birdshome_base.db')
-        cursor = connection.cursor()
-        #temp, hum, pres = _getClimate()
-        currTime = dt.datetime.now().isoformat()
-        temp_nest = float(_aktuelleTemperatur(folder='28-0317252964ff'))
-        temp_out = float(_aktuelleTemperatur(folder='28-02148107cbff'))
-        _vals = (currTime, str(round(temp_out, 1)), str(round(0, 0)), str(round(0, 0)), str(round(0, 2)),
-                 str(round(temp_nest, 1)))
-        sql = 'INSERT INTO climate (id, temperature, humidity, pressure, density, temp_nest) values' + str(
-            _vals) + ";"
-        values = []
-        cursor.execute(sql, values)
-        connection.commit()
-        connection.close()
-
+    connection = db.connect('/etc/birdshome/birdshome_base.db')
+    cursor = connection.cursor()
+    # temp, hum, pres = _getClimate()
+    currTime = dt.datetime.now().isoformat()
+    temp_nest = float(_aktuelleTemperatur(folder='28-0317252964ff'))
+    temp_out = float(_aktuelleTemperatur(folder='28-02148107cbff'))
+    _vals = (currTime, str(round(temp_out, 1)), str(round(0, 0)), str(round(0, 0)), str(round(0, 2)),
+             str(round(temp_nest, 1)))
+    sql = 'INSERT INTO climate (id, temperature, humidity, pressure, density, temp_nest) values' + str(
+        _vals) + ";"
+    values = []
+    cursor.execute(sql, values)
+    connection.commit()
+    connection.close()

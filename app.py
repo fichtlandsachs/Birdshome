@@ -35,11 +35,13 @@ videoFolder = os.path.join(os.path.dirname(__file__), app.config['OUTPUT_FOLDER'
 pictureFolder = os.path.join(os.path.dirname(__file__), app.config['OUTPUT_FOLDER'], app.config['UPLOAD_FOLDER_PIC'])
 DATABASE = app.config['SQLALCHEMY_DATABASE_URI']
 
+
 def get_db():
     db = getattr(g, '_database', None)
     if db is None:
         db = g._database = sqlite3.connect(DATABASE)
     return db
+
 
 def creat_BG_task():
     thread = threading.Thread(target=uwsgi_task)
@@ -81,7 +83,7 @@ def slideshow():
     pictures = []
 
     pic_path = os.path.join(os.path.dirname(__file__), app.config['OUTPUT_FOLDER'], app.config['UPLOAD_FOLDER_PIC'])
-    picturesList = list(sorted(pathlib.Path(pic_path).glob('*'+str(app.config['PIC_ENDING'])), key=os.path.getmtime))
+    picturesList = list(sorted(pathlib.Path(pic_path).glob('*' + str(app.config['PIC_ENDING'])), key=os.path.getmtime))
     for pic in picturesList:
         pict = [pic.name, str(pic.relative_to(os.path.join(os.path.dirname(__file__), 'application')))]
         pictures.append(pict)
@@ -121,12 +123,15 @@ def video_feed():
 
 @app.route('/cam')
 def cam():
-    fileName_short = app.config['LATEST_PIC'] + datetime.datetime.now().strftime(app.config['TIME_FORMATE']) + str(app.config['PIC_ENDING'])
+    fileName_short = app.config['LATEST_PIC'] + datetime.datetime.now().strftime(app.config['TIME_FORMATE']) + str(
+        app.config['PIC_ENDING'])
     full_web = os.path.join('static', app.config['UPLOAD_FOLDER_PIC'], fileName_short)
-    full_filename = os.path.join(os.path.dirname(__file__), app.config['OUTPUT_FOLDER'], app.config['UPLOAD_FOLDER_PIC'],
+    full_filename = os.path.join(os.path.dirname(__file__), app.config['OUTPUT_FOLDER'],
+                                 app.config['UPLOAD_FOLDER_PIC'],
                                  fileName_short)
     _take_picture(full_filename)
     return render_template('picture.html', picture=full_web)
+
 
 # Aufnehmen eines Fotos
 def _take_picture(fileName):
@@ -152,7 +157,8 @@ def getAllItemsInWorkBook():
     activities = DBHandler(get_db()).getAllActivity()
     _cleanFolder(os.path.join(os.path.dirname(__file__), 'application', 'outputs'), app.config['ACTIVITY_LIST_OUT'])
     fileName = os.path.join('outputs', app.config['ACTIVITY_LIST_OUT'] +
-                            datetime.datetime.now().strftime(app.config['TIME_FORMATE']) + app.config['ACTIVITY_LIST_END'])
+                            datetime.datetime.now().strftime(app.config['TIME_FORMATE']) + app.config[
+                                'ACTIVITY_LIST_END'])
     fileFullName = os.path.join(os.path.dirname(__file__), 'application', fileName)
     activities.to_excel(fileFullName, sheet_name=app.config['ACTIVITY_LIST_OUT'], index=False)
 
@@ -175,6 +181,7 @@ def videoList():
         videos.append(vid)
     return render_template('videoshow.html', videos=videos)
 
+
 @app.route('/videoList_noDetect')
 def videoList_noDetect():
     videos = []
@@ -188,6 +195,7 @@ def videoList_noDetect():
         videos.append(vid)
     return render_template('videoshow.html', videos=videos)
 
+
 def _cleanFolder(folder, pattern):
     if os.path.exists(folder):
         for file_object in os.listdir(folder):
@@ -198,11 +206,13 @@ def _cleanFolder(folder, pattern):
     else:
         os.makedirs(folder)
 
+
 @app.teardown_appcontext
 def close_connection(exception):
     db = getattr(g, '_database', None)
     if db is not None:
         db.close()
+
 
 @app.route('/climate')
 def climate():
@@ -239,5 +249,6 @@ def getclimatexls():
                      attachment_filename=fileFullName,
                      as_attachment=True)
 
+
 if __name__ == "__main__":
-    app.run(host='0.0.0.0')
+    app.run(host='0.0.0.0', port='5000')

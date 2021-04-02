@@ -1,9 +1,11 @@
 #!/usr/bin/python
 
-import RPi.GPIO as GPIO
-import time, requests, responses
 import datetime as dt
 import sqlite3 as db
+import time
+
+import RPi.GPIO as GPIO
+import requests
 
 # BCM GPIO-Referenen verwenden (anstelle der Pin-Nummern)
 # und GPIO-Eingang definieren

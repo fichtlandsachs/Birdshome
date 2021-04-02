@@ -1,7 +1,5 @@
-import os
-import socket
-import threading
 import datetime
+import os
 from time import sleep
 
 import cv2
@@ -10,6 +8,7 @@ import pandas
 from application.handler.audio_handler import AudioRecorder
 from application.handler.video_audio_merger import AudioVideoMerge
 from application.handler.video_handler import VideoRecorder
+
 
 class Motion_Handler():
 
@@ -63,13 +62,13 @@ class Motion_Handler():
             thresh_frame = cv2.dilate(thresh_frame, None, iterations=2)
 
             # Finding contour of moving object
-            _ ,cnts, _ = cv2.findContours(thresh_frame.copy(),
+            _, cnts, _ = cv2.findContours(thresh_frame.copy(),
                                           cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
             for contour in cnts:
                 if cv2.contourArea(contour) < 3000:
                     continue
                 motion = 1
-                #(x, y, w, h) = cv2.boundingRect(contour)
+                # (x, y, w, h) = cv2.boundingRect(contour)
                 # Hier wäre der Punkt wenn eingegrenzt werden muss hinsichtlich des Bereiches
                 # in dem die Bewegung erkannt wurde
                 self.startRecording()
@@ -84,13 +83,13 @@ class Motion_Handler():
                 time.append(datetime.datetime.now())
 
             sleep(.33)
-            count = count +1
+            count = count + 1
 
     def startRecording(self):
         timestamp_file = datetime.datetime.now().strftime("%d%m%Y%H%M%S")
-        fileVideo_short = self.prefix + timestamp_file + '.mp4'
+        fileVideo_short = self.prefix + timestamp_file + '.avi'
         fileAudio_short = self.prefix + timestamp_file + '.wav'
-        full_FileName = self.prefix + '_' + timestamp_file + '.mp4'
+        full_FileName = self.prefix + '_' + timestamp_file + '.avi'
         full_VideoFile = os.path.join(self.folderName, fileVideo_short)
         full_AudioFile = os.path.join(self.folderName, fileAudio_short)
         full_finalFile = os.path.join(self.folderName, full_FileName)
