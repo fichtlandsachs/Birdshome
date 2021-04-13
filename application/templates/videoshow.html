@@ -13,6 +13,13 @@
             <tr>
                 <td><h2>Videodateien</h2></td>
             </tr>
+            <p>
+            <form id="dateSelector" action="/videoList" method="post">
+                <label for="dateFiles">Aufnahmedatum: </label>
+                <input type="date" id="dateFiles" name="dateFiles" value={{ date_selection }}>
+                <input type="submit" value="Filter">
+            </form>
+            </p>
             </thead>
             {% for row in videos %}
                 <tr>

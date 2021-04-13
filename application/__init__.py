@@ -10,7 +10,8 @@ db = SQLAlchemy()
 
 def create_app():
     """Construct the core application."""
-    app = Flask(__name__, instance_relative_config=False)
+    app = Flask(__name__, instance_relative_config=True)
+    app.config.from_pyfile('app.cfg', silent=True)
 
     user_uuid = getpwnam('pi')[2]
     grp_uuid = getgrnam('users')[2]

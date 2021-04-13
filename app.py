@@ -1,9 +1,11 @@
 import datetime
+import glob
 import io
 import os
 import pathlib
 import sqlite3
 import threading
+import time
 
 from application.handler.database_hndl import DBHandler
 
@@ -14,7 +16,7 @@ except:
     pass
 import cv2
 import matplotlib.pyplot as plt
-from flask import render_template, Response, send_file, g
+from flask import render_template, Response, send_file, g, request
 
 from application import create_app
 
@@ -58,8 +60,23 @@ def uwsgi_task():
 creat_BG_task()
 
 
-# Livestream für die Website
 @app.route('/')
+def start():
+    videoFolder = os.path.join(os.path.dirname(__file__), app.config['OUTPUT_FOLDER'], app.config['UPLOAD_FOLDER_VID'])
+    list_of_files = glob.glob(videoFolder + '/*.avi')
+    latest_file = max(list_of_files, key=os.path.getctime)
+    latest_file_time = time.strftime('%d.%m.%Y %H:%M:%S', time.localtime(os.stat(latest_file).st_ctime))
+    num_filesToday = len(glob.glob(videoFolder + '/*' + str(datetime.datetime.today().day) + str(
+        format(datetime.datetime.today().month, '02')) + str(datetime.datetime.today().year) + '*.avi'))
+    num_files = len(glob.glob(videoFolder + '/*.avi'))
+    num_pictures = glob.glob(
+        os.path.join(os.path.dirname(__file__), app.config['OUTPUT_FOLDER'], app.config['UPLOAD_FOLDER_PIC']))
+    return render_template('start.html', last_visit=latest_file_time, overall_visits=num_files,
+                           num_visits_today=num_filesToday, num_movies=num_pictures)
+
+
+# Livestream für die Website
+@app.route('/stream')
 def stream_cam():
     return render_template('streaming.html')
 
@@ -168,18 +185,28 @@ def getAllItemsInWorkBook():
                      as_attachment=True)
 
 
-@app.route('/videoList')
+@app.route('/videoList', methods=['GET', 'POST'])
 def videoList():
     videos = []
     vidList = list()
+
+    if request.method == 'POST':
+        form_datum = request.form.get('dateFiles')
+        sel_datum = datetime.datetime.strptime(form_datum, '%Y-%m-%d')
+    else:
+        sel_datum = datetime.datetime.today()
+
     vid_path = os.path.join(os.path.dirname(__file__), app.config['OUTPUT_FOLDER'], app.config['UPLOAD_FOLDER_VID'])
+    vidDate = str(sel_datum.day) + str(format(sel_datum.month, '02')) + str(
+        sel_datum.year)
     for ending in app.config['VID_ENDINGS']:
-        vidList.extend(list(sorted(pathlib.Path(vid_path).glob(ending), key=os.path.getmtime)))
+        pattern = '*' + vidDate + ending
+        vidList.extend(list(sorted(pathlib.Path(vid_path).glob(pattern), key=os.path.getmtime, reverse=True)))
 
     for media in vidList:
         vid = [media.name, str(media.relative_to(os.path.join(os.path.dirname(__file__), 'application')))]
         videos.append(vid)
-    return render_template('videoshow.html', videos=videos)
+    return render_template('videoshow.html', videos=videos, date_selection=sel_datum)
 
 
 @app.route('/videoList_noDetect')
@@ -248,6 +275,14 @@ def getclimatexls():
                      mimetype='text/csv',
                      attachment_filename=fileFullName,
                      as_attachment=True)
+
+
+@app.route('/admin', methods=['GET', 'POST'])
+def admin():
+    # sensitivity = request.form['sensitivity']
+
+    return render_template("admin.html", enable_replay=True, inputSensitivity=100, replay_interval=10, dur_replay=7,
+                           frames_per_sec_replay=30)
 
 
 if __name__ == "__main__":

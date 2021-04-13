@@ -7,7 +7,7 @@ class Config:
     DEBUG = False
     TESTING = False
     SQLALCHEMY_TRACK_MODIFICATIONS = False
-    SQLALCHEMY_DATABASE_URI = 'sqlite:////etc/birdshome/birdshome_base.db'
+    SQLALCHEMY_DATABASE_URI = 'sqlite:////etc/birdshome/database/birdshome_base.db'
     # Bezeichnung der Temperaturfühler im Verzeichnis /sys/bus/w1/devices
     WIREDATEI_TEMP_NEST = '28-02148107cbff'
     WIREDATEI_TEMP_OUT = '28-0317252964ff'
@@ -50,11 +50,11 @@ class Config:
 class ProdConfig(Config):
     DEBUG = False
     TESTING = False
-    SQLALCHEMY_DATABASE_URI = 'sqlite:////etc/birdshome/birdshome.db'
+    SQLALCHEMY_DATABASE_URI = 'sqlite:////etc/birdshome/database/birdshome.db'
 
 
 class DevConfig(Config):
     DEBUG = True
     TESTING = True
     FLASK_DEBUG = 1
-    SQLALCHEMY_DATABASE_URI = 'sqlite:////etc/birdshome/birdshome_dev.db'
+    SQLALCHEMY_DATABASE_URI = 'sqlite:////etc/birdshome/database/birdshome_dev.db'

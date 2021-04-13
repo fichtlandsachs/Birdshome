@@ -74,14 +74,6 @@ class Motion_Handler():
                 self.startRecording()
                 sleep(5)
                 # Appending status of motion
-            motion_list.append(motion)
-
-            motion_list = motion_list[-2:]
-
-            # Appending Start time of motion
-            if motion_list[-1] == 1 and motion_list[-2] == 0:
-                time.append(datetime.datetime.now())
-
             sleep(.33)
             count = count + 1
 
