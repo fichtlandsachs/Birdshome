@@ -11,3 +11,6 @@ responses
 PyAudio
 SQLAlchemy
 python-ffmpeg-video-streaming
+flask_wtf
+wtforms
+wtforms_components

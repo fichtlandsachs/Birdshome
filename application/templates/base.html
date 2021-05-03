@@ -12,20 +12,22 @@
 </head>
 <body>
 <div class="topnav" id="birdNav">
-    <a href="/" style="text-transform:capitalize;">&uuml;bersicht</a>
+
+    <a href="personas" id="we_live_here">Hier wohnen wir</a>
+
     <a href="stream" id="stream">Live Stream</a></li>
     <a href="cam" id="cam">Foto aufnehmen</a></li>
     <a href="capture" id="record">Film aufnehmen</a></li>
     <div class="dropdown">
         <button class="dropbtn">Media</button>
-        <div class="dropdown-content" id="" media>
+        <div class="dropdown-content" id="media">
             <a href="slideshow">Bilder</a>
             <a href="videoList">Video</a>
             <a href="videoList_noDetect">Videos aussortiert</a>
         </div>
     </div>
     <a href="admin" id="admin">Admin</a></li>
-    <a href="javascript:void(0);" class="icon" onclick="myFunction()">
+    <a href="javascript:void(0);" class="icon" onclick="navFunction()">
         <i class="fa fa-bars"></i>
     </a>
 </div>
@@ -39,7 +41,7 @@
     {% endblock %}
 </div>
 <script>
-    function myFunction() {
+    function navFunction() {
         var x = document.getElementById("birdNav");
         if (x.className === "topnav") {
             x.className += " responsive";
@@ -48,5 +50,6 @@
         }
     }
 
+    {% block script %}{% endblock %}
 </script>
 </body>

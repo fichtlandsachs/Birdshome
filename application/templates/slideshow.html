@@ -10,7 +10,7 @@
     <div class="row">
         {% for row in pictures %}
             <div class="column">
-                <img src="{{ row[1] }}" alt="{{ row[0] }}" class="responsive" onclick="myFunction(this);">
+                <img src="{{ row[1] }}" alt="{{ row[0] }}" class="responsive" onclick="expandImg(this);">
             </div>
         {% endfor %}
     </div>
@@ -28,7 +28,7 @@
     </div>
     <script>
 
-        function myFunction(imgs) {
+        function expandImg(imgs) {
             var expandImg = document.getElementById("expandedImg");
             var imgText = document.getElementById("imgtext");
             expandImg.src = imgs.src;

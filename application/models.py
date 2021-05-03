@@ -8,7 +8,7 @@ Base = declarative_base()
 
 
 class birdsActivity(db.Model):
-    __tablename__ = 'birds_activity'
+    __tablename__ = "birds_activity"
     id = Column(DATETIME,
                 primary_key=True,
                 index=False,
@@ -22,10 +22,17 @@ class birdsActivity(db.Model):
 
 
 class climate(db.Model):
-    __tablename__ = 'climate'
+    __tablename__ = "climate"
     id = Column(DATETIME, primary_key=True, index=True, unique=True, nullable=False)
     temperature = Column(Integer, primary_key=False, index=False, unique=False)
     humidity = Column(Integer, primary_key=False, index=False, unique=False)
     pressure = Column(Integer, primary_key=False, index=False)
     density = Column(Integer, primary_key=False, index=False)
     temp_nest = Column(Integer, primary_key=False, index=False, unique=False)
+
+
+class appConfig(db.Model):
+    __tablename__ = "config"
+    config_area = Column(String(255), primary_key=True, index=True, unique=False, nullable=False)
+    config_key = Column(String(255), primary_key=True, index=True, unique=False, nullable=False)
+    config_value = Column(String, primary_key=False, index=False, unique=False, nullable=True)

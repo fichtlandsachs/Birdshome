@@ -89,6 +89,9 @@ tr:hover {
     height: auto;
 }
 
+.adminFormOutputField {
+    border: 0;
+}
 @media screen and (max-width: 600px) {
     .topnav a:not(:first-child) {
         display: none;
@@ -117,4 +120,5 @@ tr:hover {
         text-align: left;
     }
 }
+
 

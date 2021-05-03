@@ -3,34 +3,41 @@ import os
 from time import sleep
 
 import cv2
-import pandas
 
+from application import constants
 from application.handler.audio_handler import AudioRecorder
+from application.handler.database_hndl import DBHandler
 from application.handler.video_audio_merger import AudioVideoMerge
 from application.handler.video_handler import VideoRecorder
 
 
-class Motion_Handler():
+class Motion_Handler:
 
-    def __init__(self, vc, vidHeigth, vidWidth, fileNamePrefix, folder):
-        self.vc = vc
-        self.video_height = vidHeigth
-        self.video_width = vidWidth
-        self.prefix = fileNamePrefix
-        self.folderName = folder
+    def __init__(self, app=None):
+        self.app = app
+        self.vc = app.config[constants.VIDEO_CAPTURE_INST]
+        self.video_height = self.app.config[constants.LATEST_PIC_RES_X]
+        self.video_width = self.app.config[constants.LATEST_PIC_RES_Y]
+        self.prefix = self.app.config[constants.PREFIX_PIC]
+        self.db = DBHandler(app.config[constants.SQLALCHEMY_DATABASE_URI])
+        self.folderName = os.path.join(app.root_path, app.config[constants.OUTPUT_FOLDER],
+                                       app.config[constants.UPLOAD_FOLDER_VID])
+        self.nextScreenShot = datetime.datetime.now() + datetime.timedelta(
+            minutes=int(app.config[constants.REPLAY_INTERVAL]))
 
     def detect(self):
         # Assigning our static_back to None
         static_back = None
-        # List when any moving object appear
-        motion_list = [None, None]
         count = 0
-        # Time of movement
-        time = []
         # Initializing DataFrame, one column is start
         # time and other column is end time
-        df = pandas.DataFrame(columns=["Start", "End"])
+        nextReadTime = datetime.datetime.now() + datetime.timedelta(minutes=10)
+        sensitivity = None
         while True:
+
+            if datetime.datetime.now() > nextReadTime or sensitivity is None:
+                sensitivity = int(self.app.config[constants.SENSITIVITY])
+                nextReadTime = datetime.datetime.now() + datetime.timedelta(minutes=10)
             # Reading frame(image) from video
             check, frame = self.vc.read()
 
@@ -65,12 +72,14 @@ class Motion_Handler():
             _, cnts, _ = cv2.findContours(thresh_frame.copy(),
                                           cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
             for contour in cnts:
-                if cv2.contourArea(contour) < 3000:
+                if cv2.contourArea(contour) < sensitivity:
                     continue
                 motion = 1
                 # (x, y, w, h) = cv2.boundingRect(contour)
                 # Hier wäre der Punkt wenn eingegrenzt werden muss hinsichtlich des Bereiches
                 # in dem die Bewegung erkannt wurde
+                self.db.create_birdMove('cam1')
+
                 self.startRecording()
                 sleep(5)
                 # Appending status of motion
@@ -78,19 +87,21 @@ class Motion_Handler():
             count = count + 1
 
     def startRecording(self):
-        timestamp_file = datetime.datetime.now().strftime("%d%m%Y%H%M%S")
-        fileVideo_short = self.prefix + timestamp_file + '.avi'
-        fileAudio_short = self.prefix + timestamp_file + '.wav'
-        full_FileName = self.prefix + '_' + timestamp_file + '.avi'
+        timeFormat = self.app.config[constants.TIME_FORMAT_FILE]
+        timestamp_file = datetime.datetime.now().strftime(timeFormat)
+        fileVideo_short = self.prefix + timestamp_file + self.app.config[constants.VID_FORMAT]
+        fileAudio_short = self.prefix + timestamp_file + self.app.config[constants.SOUND_FORMAT]
+        full_FileName = self.prefix + '_' + timestamp_file + self.app.config[constants.VID_FORMAT]
         full_VideoFile = os.path.join(self.folderName, fileVideo_short)
         full_AudioFile = os.path.join(self.folderName, fileAudio_short)
         full_finalFile = os.path.join(self.folderName, full_FileName)
         self.record(full_finalFile, full_VideoFile, full_AudioFile)
 
     def record(self, full_filename, video_fileName, audio_fileName):
-        delta = 15  # time for taking a video
+
+        delta = int(self.app.config[constants.DURATION_VID])
         endTime = datetime.datetime.now() + datetime.timedelta(seconds=delta)
-        vHandler = VideoRecorder(self.vc, video_fileName, endTime, delta, self.video_height, self.video_width)
+        vHandler = VideoRecorder(video_fileName, endTime, self.app.config[constants.SQLALCHEMY_DATABASE_URI], self.vc)
         aHandler = AudioRecorder(audio_fileName, endTime)
 
         vHandler.start()
@@ -103,3 +114,4 @@ class Motion_Handler():
 
     def stop(self):
         pass
+
